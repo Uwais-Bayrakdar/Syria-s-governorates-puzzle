@@ -111,9 +111,7 @@ const elements = {
 };
 
 // Initialize game
-function initGame() {
-    document.body.style.background = "url('Syrian Arabian Republic (background img).jpg')";
-    
+function initGame() {    
     // Event listeners
     elements.startBtn.addEventListener('click', startGame);
     elements.nextBtn.addEventListener('click', nextQuestion);
