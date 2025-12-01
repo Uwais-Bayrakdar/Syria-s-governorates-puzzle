@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لغز المحافظات السورية</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    #key-input-1:focus,
+    #key-input-2:focus,
+    #key-input-3:focus,
+    #key-input-4:focus {
+        outline: none;
+        border-color: #0ff;
+        box-shadow: 0 0 10px rgba(0,255,255,0.5);
+    }
+
+    /* Button styling to match main screen */
+    #submit-key-1,
+    #submit-key-2,
+    #submit-key-3,
+    #submit-key-4 {
+        background: #0a0a0a !important;
+        color: #0ff !important;
+        border: 1px solid #0ff !important;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-family: 'Courier New', monospace;
+    }
+
+    #submit-key-1:hover,
+    #submit-key-2:hover,
+    #submit-key-3:hover,
+    #submit-key-4:hover {
+        background: #0ff !important;
+        color: #000 !important;
+        box-shadow: 0 0 15px rgba(0,255,255,0.7);
+    }
+
+    .error {
+        color: #f00 !important;
+        margin-top: 10px;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>لغز المحافظات السورية</h1>
+                <img src="Flag-Syria.webp" alt="Syrian Flag" class="flag">
+            </div>
+        </header>
+        
+        <div class="game-area">
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="screen active">
+                <div class="welcome-content">
+                    <h2>مرحباً بكم في لغز الجغرافيا السورية!</h2>
+                    <p>الإجابة على أسئلة حول المحافظات والمعالم السورية.</p>
+                    <p>بعد السؤال الثالث، ستحتاج إلى إدخال مفتاح تشفير لفتح السؤال الرابع.</p>
+                    <p>ستظهر متطلبات رئيسية مماثلة بعد السؤالين السادس والحادي عشر.</p>
+                    <p>أكمل جميع الأسئلة الـ14 للفوز!</p>
+                    <button id="start-btn" class="btn">ابدأ اللعبة</button>
+                </div>
+            </div>
+            
+            <!-- Question Screen -->
+            <div id="question-screen" class="screen">
+                <div class="question-content">
+                    <div class="question-header">
+                        <h2>السؤال <span id="current-question">1</span>/14</h2>
+                        <div class="progress-bar">
+                            <div class="progress" id="progress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <p id="question-text">جار تحميل السؤال...</p>
+                    </div>
+                    
+                    <div class="answer-container">
+                        <input type="text" id="answer-input" placeholder="أدخل إسم المحافظة...">
+                        <button id="submit-answer" class="btn">إرسال الاجابة</button>
+                        <div id="answer-feedback" class="feedback hidden"></div>
+                    </div>
+                    
+                    <button id="next-btn" class="btn hidden">السؤال التالي</button>
+                </div>
+            </div>
+            
+           <!-- Encryption Key Screens -->
+            <div id="encryption-screen-1" style="background: rgba(0, 0, 0, 0.92);" class="screen">
+                <div class="encryption-content" style=
+                "background: rgba(20,20,20,0.85);
+                border: 1px solid #333;
+                box-shadow: 0 0 20px rgba(0,255,255,0.35);
+                font-family: 'Courier New', monospace;
+                ">
+                    <h2 style="text-shadow: 0 0 10px rgba(0,255,255,0.6);">مفتاح التشفير مطلوب</h2>
+                    <p style="color: white;">لقد أتممت ٣ أسئلة. يُرجى إدخال مفتاح التشفير ١ لفتح الأسئلة التالية.</p>
+                    <input style="
+                    background: #222;
+                    border: 1px solid #333;
+                    color: #fff !important;
+                    font-family: 'Courier New', monospace;
+                    " type="password" id="key-input-1" placeholder="أدخل مفتاح التشفير ١">
+                    <button id="submit-key-1" class="btn" style="color: white;">إرسال المفتاح</button>
+                    <div id="key-error-1" class="error hidden">مفتاح غير صحيح. يُرجى المحاولة مرة أخرى.</div>
+                </div>
+            </div>
+
+            <div id="encryption-screen-2" class="screen" style="background: rgba(0, 0, 0, 0.8);">
+                <div class="encryption-content">
+                    <h2 style="color: white;">مفتاح التشفير مطلوب</h2>
+                    <p style="color: white;">لقد أتممت ٦ أسئلة. يُرجى إدخال مفتاح التشفير ٢ لفتح الأسئلة التالية.</p>
+                    <input type="password" id="key-input-2" placeholder="أدخل مفتاح التشفير ٢">
+                    <button id="submit-key-2" class="btn" style="color: white;">إرسال المفتاح</button>
+                    <div id="key-error-2" class="error hidden">مفتاح غير صحيح. يُرجى المحاولة مرة أخرى.</div>
+                </div>
+            </div>
+
+            <div id="encryption-screen-3" class="screen" style="background: rgba(0, 0, 0, 0.8);">
+                <div class="encryption-content">
+                    <h2 style="color: white;">مفتاح التشفير مطلوب</h2>
+                    <p style="color: white;">لقد أتممت ١١ سؤالًا. يُرجى إدخال مفتاح التشفير ٣ لفتح الأسئلة التالية.</p>
+                    <input type="password" id="key-input-3" placeholder="أدخل مفتاح التشفير ٣">
+                    <button id="submit-key-3" class="btn" style="color: white;">إرسال المفتاح</button>
+                    <div id="key-error-3" class="error hidden">مفتاح غير صحيح. يُرجى المحاولة مرة أخرى.</div>
+                </div>
+            </div>
+
+            <div id="encryption-screen-4" class="screen" style="background: rgba(0, 0, 0, 0.8);">
+                <div class="encryption-content">
+                    <h2 style="color: white;">مفتاح التشفير النهائي مطلوب</h2>
+                    <p style="color: white;">لقد أتممت جميع الأسئلة! يُرجى إدخال مفتاح التشفير الأخير للفوز.</p>
+                    <input type="password" id="key-input-4" placeholder="أدخل مفتاح التشفير النهائي">
+                    <button id="submit-key-4" class="btn" style="color: white;">إرسال المفتاح</button>
+                    <div id="key-error-4" class="error hidden">مفتاح غير صحيح. يُرجى المحاولة مرة أخرى.</div>
+                </div>
+            </div>
+
+            
+            <!-- Win Screen -->
+            <div id="win-screen" class="screen">
+                <div class="win-content">
+                    <h2>مبروك لقد فزت!</h2>
+                    <p>لقد أكملت بنجاح جميع الأسئلة الـ14 وفتحت جميع مفاتيح التشفير.</p>
+                    <p>أنت الآن خبير في الجغرافيا السورية!</p>
+                    <button id="restart-btn" class="btn">العب مرة أخرى</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

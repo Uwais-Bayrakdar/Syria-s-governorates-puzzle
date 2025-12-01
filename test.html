@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syrian Geography Puzzle - Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            transition: background-image 0.5s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .header-content h1 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            margin: 0;
+        }
+
+        .flag {
+            width: 80px;
+            height: 50px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-content, .question-content, .encryption-content, .win-content {
+            text-align: center;
+        }
+
+        .welcome-content h2, .encryption-content h2, .win-content h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .welcome-content p, .encryption-content p, .win-content p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #34495e;
+        }
+
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .question-header {
+            margin-bottom: 25px;
+        }
+
+        .question-header h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-container p {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+            text-align: center;
+        }
+
+        .answer-container {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .answer-container input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .answer-container button {
+            margin-top: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .feedback.hidden {
+            display: none;
+        }
+
+        #next-btn.hidden {
+            display: none;
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .screen {
+                padding: 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .flag {
+                width: 60px;
+                height: 38px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Syrian Geography Puzzle</h1>
+                <img src="Flag-Syria.webp" alt="Syrian Flag" class="flag" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumbx/5/53/Flag_of_Syria.svg/2560px-Flag_of_Syria.svg.png';">
+            </div>
+        </header>
+        
+        <div class="game-area">
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="screen active">
+                <div class="welcome-content">
+                    <h2>Welcome to the Syrian Geography Puzzle!</h2>
+                    <p>Answer questions about Syrian governorates and landmarks.</p>
+                    <p>After the 3rd question, you'll need to enter an encryption key to unlock the 4th question.</p>
+                    <p>Similar key requirements will appear after the 6th and 11th questions.</p>
+                    <p>Complete all 14 questions to win!</p>
+                    <button id="start-btn" class="btn">Start Game</button>
+                </div>
+            </div>
+            
+            <!-- Question Screen -->
+            <div id="question-screen" class="screen">
+                <div class="question-content">
+                    <div class="question-header">
+                        <h2>Question <span id="current-question">1</span>/14</h2>
+                        <div class="progress-bar">
+                            <div class="progress" id="progress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <p id="question-text">Loading question...</p>
+                    </div>
+                    
+                    <div class="answer-container">
+                        <input type="text" id="answer-input" placeholder="Enter the name of the province...">
+                        <button id="submit-answer" class="btn">Submit Answer</button>
+                        <div id="answer-feedback" class="feedback hidden"></div>
+                    </div>
+                    
+                    <button id="next-btn" class="btn hidden">Next Question</button>
+                </div>
+            </div>
+            
+            <!-- Encryption Key Screens -->
+            <div id="encryption-screen-1" class="screen">
+                <div class="encryption-content">
+                    <h2>Encryption Key Required</h2>
+                    <p>You've completed 3 questions. Please enter Encryption Key 1 to unlock the next questions.</p>
+                    <input type="password" id="key-input-1" placeholder="Enter Encryption Key 1">
+                    <button id="submit-key-1" class="btn">Submit</button>
+                    <div id="key-error-1" class="error hidden">Incorrect key. Please try again.</div>
+                </div>
+            </div>
+            
+            <div id="encryption-screen-2" class="screen">
+                <div class="encryption-content">
+                    <h2>Encryption Key Required</h2>
+                    <p>You've completed 6 questions. Please enter Encryption Key 2 to unlock the next questions.</p>
+                    <input type="password" id="key-input-2" placeholder="Enter Encryption Key 2">
+                    <button id="submit-key-2" class="btn">Submit</button>
+                    <div id="key-error-2" class="error hidden">Incorrect key. Please try again.</div>
+                </div>
+            </div>
+            
+            <div id="encryption-screen-3" class="screen">
+                <div class="encryption-content">
+                    <h2>Encryption Key Required</h2>
+                    <p>You've completed 11 questions. Please enter Encryption Key 3 to unlock the next questions.</p>
+                    <input type="password" id="key-input-3" placeholder="Enter Encryption Key 3">
+                    <button id="submit-key-3" class="btn">Submit</button>
+                    <div id="key-error-3" class="error hidden">Incorrect key. Please try again.</div>
+                </div>
+            </div>
+            
+            <div id="encryption-screen-4" class="screen">
+                <div class="encryption-content">
+                    <h2>Final Encryption Key Required</h2>
+                    <p>You've completed all questions! Please enter the final encryption key to win.</p>
+                    <input type="password" id="key-input-4" placeholder="Enter Final Encryption Key">
+                    <button id="submit-key-4" class="btn">Submit</button>
+                    <div id="key-error-4" class="error hidden">Incorrect key. Please try again.</div>
+                </div>
+            </div>
+            
+            <!-- Win Screen -->
+            <div id="win-screen" class="screen">
+                <div class="win-content">
+                    <h2>Congratulations! You Won!</h2>
+                    <p>You've successfully completed all 14 questions and unlocked all encryption keys.</p>
+                    <p>You are now an expert on Syrian geography!</p>
+                    <button id="restart-btn" class="btn">Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Game data - Questions from Q_A file with correct answers
+        const questions = [
+            {
+                question: "شُيّد فيها مسجد على أنقاض معبد روماني وكنيسة بيزنطية؟",
+                answer: "دمشق"
+            },
+            {
+                question: "أجدد محافظة سورية",
+                answer: "ريف دمشق"
+            },
+            {
+                question: "سوقها يمتد لنحو 13 كم",
+                answer: "حلب"
+            },
+            {
+                question: "لم تقدر عليها قوة عظمى",
+                answer: "إدلب"
+            },
+            {
+                question: "ذكرت في التوراة سفر الملوك الثاني 14:25–26",
+                answer: "حماة"
+            },
+            {
+                question: "ولدت فيها الامبراطورة \"جوليا دومنا\"",
+                answer: "حمص"
+            },
+            {
+                question: "جبل العرب",
+                answer: "السويداء"
+            },
+            {
+                question: "محمود الجوابرة - حسام عياش",
+                answer: "درعا"
+            },
+            {
+                question: "معرض حي للدمار الذي خلفه الاحتلال",
+                answer: "القنيطرة"
+            },
+            {
+                question: "تقع ام الطنافس الفوقا في....",
+                answer: "اللاذقية"
+            },
+            {
+                question: "البر القريب من أرادوس؟",
+                answer: "طرطوس"
+            },
+            {
+                question: "كانت بشكل مؤقت عاصمة للخلافة العباسية",
+                answer: "الرقة"
+            },
+            {
+                question: "يقسمها نهر الفرات إلى \"الجزيرة\" و \"الشامية\"",
+                answer: "دير الزور"
+            },
+            {
+                question: "سلة غذاء سوريا",
+                answer: "الحسكة"
+            }
+        ];
+
+        // Encryption keys
+        const encryptionKeys = [
+            "08122024", // Key 1
+            "18032011", // Key 2
+            "17041946", // Key 3
+            "15032011"  // Key 4
+        ];
+
+        // Background images
+        const backgroundImages = [
+            "photosBackground/3-15.jpg",
+            "photosBackground/30917ed5-bb19-4d0f-acdb-b1901deb85d7.webp",
+            "photosBackground/76231_424939130898267_559626753_n.jpg",
+            "photosBackground/ab2b597b-72a3-4a51-867e-de439865edd6.png",
+            "photosBackground/arw.png",
+            "photosBackground/Bosra_pano_Syria.jpg",
+            "photosBackground/d8b3d988d8b1d98ad8a7.jpg",
+            "photosBackground/image_750x_65f9b0a0a4592.jpg",
+            "photosBackground/thumbs_b_c_1e0b8b50b77f300c1d72b2aa1d19f915.jpg",
+            "photosBackground/الجسر_المعلق_سوريا.jpg"
+        ];
+
+        // Game state
+        let gameState = {
+            currentQuestion: 0,
+            score: 0,
+            currentScreen: 'welcome-screen',
+            answered: false
+        };
+
+        // DOM Elements
+        const screens = {
+            welcome: document.getElementById('welcome-screen'),
+            question: document.getElementById('question-screen'),
+            encryption1: document.getElementById('encryption-screen-1'),
+            encryption2: document.getElementById('encryption-screen-2'),
+            encryption3: document.getElementById('encryption-screen-3'),
+            encryption4: document.getElementById('encryption-screen-4'),
+            win: document.getElementById('win-screen')
+        };
+
+        const elements = {
+            startBtn: document.getElementById('start-btn'),
+            currentQuestionSpan: document.getElementById('current-question'),
+            questionText: document.getElementById('question-text'),
+            answerInput: document.getElementById('answer-input'),
+            submitAnswer: document.getElementById('submit-answer'),
+            nextBtn: document.getElementById('next-btn'),
+            progress: document.getElementById('progress'),
+            keyInput1: document.getElementById('key-input-1'),
+            keyInput2: document.getElementById('key-input-2'),
+            keyInput3: document.getElementById('key-input-3'),
+            keyInput4: document.getElementById('key-input-4'),
+            submitKey1: document.getElementById('submit-key-1'),
+            submitKey2: document.getElementById('submit-key-2'),
+            submitKey3: document.getElementById('submit-key-3'),
+            submitKey4: document.getElementById('submit-key-4'),
+            keyError1: document.getElementById('key-error-1'),
+            keyError2: document.getElementById('key-error-2'),
+            keyError3: document.getElementById('key-error-3'),
+            keyError4: document.getElementById('key-error-4'),
+            answerFeedback: document.getElementById('answer-feedback'),
+            restartBtn: document.getElementById('restart-btn')
+        };
+
+        // Set random background image
+        function setRandomBackground() {
+            const randomIndex = Math.floor(Math.random() * backgroundImages.length);
+            const backgroundImage = backgroundImages[randomIndex];
+            document.body.style.backgroundImage = `url('${backgroundImage}')`;
+        }
+
+        // Initialize game
+        function initGame() {
+            setRandomBackground();
+
+            // Event listeners
+            elements.startBtn.addEventListener('click', startGame);
+            elements.nextBtn.addEventListener('click', nextQuestion);
+
+            // Encryption key event listeners
+            elements.submitKey1.addEventListener('click', () => checkEncryptionKey(1));
+            elements.submitKey2.addEventListener('click', () => checkEncryptionKey(2));
+            elements.submitKey3.addEventListener('click', () => checkEncryptionKey(3));
+            elements.submitKey4.addEventListener('click', () => checkEncryptionKey(4));
+
+            // Enter key for encryption inputs
+            elements.keyInput1.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkEncryptionKey(1);
+            });
+            elements.keyInput2.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkEncryptionKey(2);
+            });
+            elements.keyInput3.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkEncryptionKey(3);
+            });
+            elements.keyInput4.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkEncryptionKey(4);
+            });
+
+            elements.restartBtn.addEventListener('click', resetGame);
+
+            // Add answer submit event listeners
+            elements.submitAnswer.addEventListener('click', submitAnswer);
+            elements.answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') submitAnswer();
+            });
+        }
+
+        // Start the game
+        function startGame() {
+            showScreen('question-screen');
+            loadQuestion();
+            updateProgress();
+        }
+
+        // Show a specific screen
+        function showScreen(screenId) {
+            // Hide all screens
+            Object.values(screens).forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Show the requested screen
+            screens[getScreenKey(screenId)].classList.add('active');
+            gameState.currentScreen = screenId;
+        }
+
+        // Get screen key from ID
+        function getScreenKey(screenId) {
+            const keyMap = {
+                'welcome-screen': 'welcome',
+                'question-screen': 'question',
+                'encryption-screen-1': 'encryption1',
+                'encryption-screen-2': 'encryption2',
+                'encryption-screen-3': 'encryption3',
+                'encryption-screen-4': 'encryption4',
+                'win-screen': 'win'
+            };
+            return keyMap[screenId] || 'welcome';
+        }
+
+        // Load current question
+        function loadQuestion() {
+            if (gameState.currentQuestion >= questions.length) return;
+
+            const question = questions[gameState.currentQuestion];
+            elements.questionText.textContent = question.question;
+            elements.currentQuestionSpan.textContent = gameState.currentQuestion + 1;
+
+            // Reset answer input and feedback
+            elements.answerInput.value = '';
+            elements.answerInput.disabled = false;
+            elements.answerFeedback.classList.add('hidden');
+            elements.answerFeedback.classList.remove('correct', 'incorrect');
+
+            gameState.answered = false;
+            elements.nextBtn.classList.add('hidden');
+        }
+
+        // Submit answer
+        function submitAnswer() {
+            if (gameState.answered) return;
+
+            const userAnswer = elements.answerInput.value.trim();
+            const correctAnswer = questions[gameState.currentQuestion].answer;
+
+            gameState.answered = true;
+
+            // Disable input
+            elements.answerInput.disabled = true;
+
+            // Check if answer is correct (case insensitive comparison)
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                elements.answerFeedback.textContent = 'Correct!';
+                elements.answerFeedback.classList.remove('incorrect');
+                elements.answerFeedback.classList.add('correct');
+                gameState.score++;
+            } else {
+                elements.answerFeedback.textContent = `Incorrect. The correct answer is: ${correctAnswer}`;
+                elements.answerFeedback.classList.remove('correct');
+                elements.answerFeedback.classList.add('incorrect');
+            }
+
+            elements.answerFeedback.classList.remove('hidden');
+
+            // Show next button after a delay
+            setTimeout(() => {
+                elements.nextBtn.classList.remove('hidden');
+            }, 1000);
+        }
+
+        // Move to next question
+        function nextQuestion() {
+            gameState.currentQuestion++;
+
+            // Check if we need to show an encryption screen
+            if (gameState.currentQuestion === 3) {
+                showScreen('encryption-screen-1');
+            } else if (gameState.currentQuestion === 6) {
+                showScreen('encryption-screen-2');
+            } else if (gameState.currentQuestion === 11) {
+                showScreen('encryption-screen-3');
+            } else if (gameState.currentQuestion === questions.length) {
+                showScreen('encryption-screen-4');
+            } else {
+                loadQuestion();
+                updateProgress();
+            }
+        }
+
+        // Check encryption key
+        function checkEncryptionKey(keyNumber) {
+            let inputElement, errorElement, expectedKey, nextScreen;
+
+            switch(keyNumber) {
+                case 1:
+                    inputElement = elements.keyInput1;
+                    errorElement = elements.keyError1;
+                    expectedKey = encryptionKeys[0];
+                    nextScreen = 'question-screen';
+                    break;
+                case 2:
+                    inputElement = elements.keyInput2;
+                    errorElement = elements.keyError2;
+                    expectedKey = encryptionKeys[1];
+                    nextScreen = 'question-screen';
+                    break;
+                case 3:
+                    inputElement = elements.keyInput3;
+                    errorElement = elements.keyError3;
+                    expectedKey = encryptionKeys[2];
+                    nextScreen = 'question-screen';
+                    break;
+                case 4:
+                    inputElement = elements.keyInput4;
+                    errorElement = elements.keyError4;
+                    expectedKey = encryptionKeys[3];
+                    nextScreen = 'win-screen';
+                    break;
+            }
+
+            const enteredKey = inputElement.value.trim();
+
+            if (enteredKey === expectedKey) {
+                // Reset the input and hide error
+                inputElement.value = '';
+                errorElement.classList.add('hidden');
+
+                if (keyNumber === 4) {
+                    // For the final key, show the win screen
+                    showScreen(nextScreen);
+                } else {
+                    // Update the question number to the next one after the key requirement
+                    if (keyNumber === 1) {
+                        gameState.currentQuestion = 3; // Next question after 3rd
+                    } else if (keyNumber === 2) {
+                        gameState.currentQuestion = 6; // Next question after 6th
+                    } else if (keyNumber === 3) {
+                        gameState.currentQuestion = 11; // Next question after 11th
+                    }
+
+                    loadQuestion();
+                    updateProgress();
+                    showScreen(nextScreen);
+                }
+            } else {
+                // Show error
+                errorElement.classList.remove('hidden');
+                // Shake animation for error
+                inputElement.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    inputElement.style.animation = '';
+                }, 500);
+            }
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progressPercent = ((gameState.currentQuestion) / questions.length) * 100;
+            elements.progress.style.width = `${progressPercent}%`;
+        }
+
+        // Reset game
+        function resetGame() {
+            gameState = {
+                currentQuestion: 0,
+                score: 0,
+                currentScreen: 'welcome-screen',
+                answered: false
+            };
+
+            setRandomBackground();
+            showScreen('welcome-screen');
+        }
+
+        // Initialize the game when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add shake animation to the style
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                    20%, 40%, 60%, 80% { transform: translateX(5px); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            initGame();
+        });
+    </script>
+</body>
+</html>
