@@ -86,6 +86,7 @@ const screens = {
 };
 
 const elements = {
+    titleText: document.getElementById('title-text'),
     startBtn: document.getElementById('start-btn'),
     questionScreen: document.getElementById("question-screen"),
     currentQuestionSpan: document.getElementById('current-question'),
@@ -229,26 +230,33 @@ function submitAnswer() {
 // Move to next question
 function nextQuestion() {
     gameState.currentQuestion++;
-    
     // Check if we need to show an encryption screen
     if (gameState.currentQuestion === 3) {
         showScreen('encryption-screen-1');
-        document.body.style.backgroundImage = "url('CIS Club Picture/CIS CLUB.jpg')";
+        elements.titleText.textContent = "تم اختراق البرنامج";
+        elements.titleText.style.color = "#ff0000ff";
+        document.body.style.backgroundImage = "url('CIS-Club/CIS-CLUB.jpg')";
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundPosition = "center";
     } else if (gameState.currentQuestion === 6) {
         showScreen('encryption-screen-2');
-        document.body.style.backgroundImage = "url('CIS Club Picture/CIS CLUB.jpg')";
+        elements.titleText.textContent = "تم اختراق البرنامج";
+        elements.titleText.style.color = "#ff0000ff";
+        document.body.style.backgroundImage = "url('CIS-Club/CIS-CLUB.jpg')";
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundPosition = "center";
     } else if (gameState.currentQuestion === 11) {
         showScreen('encryption-screen-3');
-        document.body.style.backgroundImage = "url('CIS Club Picture/CIS CLUB.jpg')";
+        elements.titleText.textContent = "تم اختراق البرنامج";
+        elements.titleText.style.color = "#ff0000ff";
+        document.body.style.backgroundImage = "url('CIS-Club/CIS-CLUB.jpg')";
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundPosition = "center";
     } else if (gameState.currentQuestion === questions.length) {
         showScreen('encryption-screen-4');
-        document.body.style.backgroundImage = "url('CIS Club Picture/CIS CLUB.jpg')";
+        elements.titleText.textContent = "تم اختراق البرنامج";
+        elements.titleText.style.color = "#ff0000ff";
+        document.body.style.backgroundImage = "url('CIS-Club/CIS-CLUB.jpg')";
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundPosition = "center";
     } else {
@@ -302,18 +310,20 @@ function checkEncryptionKey(keyNumber) {
             // Update the question number to the next one after the key requirement
             if (keyNumber === 1) {
                 gameState.currentQuestion = 3; // Next question after 3rd
-                document.body.style.background = "url('Syrian Arabian Republic (background img).jpg')"
+                document.body.style.background = "url('SyriaDesktop.jpg')"
             } else if (keyNumber === 2) {
                 gameState.currentQuestion = 6; // Next question after 6th
-                document.body.style.background = "url('Syrian Arabian Republic (background img).jpg')"
+                document.body.style.background = "url('SyriaDesktop.jpg')"
             } else if (keyNumber === 3) {
                 gameState.currentQuestion = 11; // Next question after 11th
-                document.body.style.background = "url('Syrian Arabian Republic (background img).jpg')"
+                document.body.style.background = "url('SyriaDesktop.jpg')"
             }
             
             loadQuestion();
             updateProgress();
             showScreen(nextScreen);
+            elements.titleText.textContent = "لغز المحافظات السورية";
+            elements.titleText.style.color = "#ffffff"; 
         }
     } else {
         // Show error
@@ -341,7 +351,7 @@ function resetGame() {
         answered: false
     };
     
-    document.body.style.background = "url('Syrian Arabian Republic (background img).jpg')"
+    document.body.style.background = "url('SyriaDesktop.jpg')"
     showScreen('welcome-screen');
 }
 
