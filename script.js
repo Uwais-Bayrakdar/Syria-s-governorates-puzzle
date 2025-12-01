@@ -293,7 +293,12 @@ function checkEncryptionKey(keyNumber) {
         inputElement.value = '';
         errorElement.classList.add('hidden');
 
+        // Remove hacked background
         document.body.classList.remove('hacked-mode');
+        
+        // FIX: Reset Title Text and Color HERE (so it happens for all keys)
+        elements.titleText.textContent = "لغز المحافظات السورية";
+        elements.titleText.style.color = "#ffffff"; 
         
         if (keyNumber === 4) {
             // For the final key, show the win screen
@@ -307,8 +312,6 @@ function checkEncryptionKey(keyNumber) {
             loadQuestion();
             updateProgress();
             showScreen(nextScreen);
-            elements.titleText.textContent = "لغز المحافظات السورية";
-            elements.titleText.style.color = "#ffffff"; 
         }
     } else {
         // Show error
